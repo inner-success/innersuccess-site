@@ -19,7 +19,6 @@
     .wrap{ max-width:var(--max); margin:0 auto; padding:40px 18px 64px; }
     h1{ font-size:28px; margin:0 0 10px; letter-spacing:-0.01em; }
     .lede{ margin:0 0 18px; color:#222; font-size:16px; max-width: 850px; }
-
     .scale{
       border:1px solid #e6e6e6;
       border-radius:14px;
@@ -29,31 +28,23 @@
     }
     .scale strong{ display:block; margin-bottom:8px; }
     .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
-
-    /* Question block */
     .q{
       border:1px solid #e6e6e6;
       border-radius:14px;
       padding:16px;
-      margin:0;
+      margin:12px 0;
       background:#fff;
     }
-    /* Blank line BEFORE each question (between blocks) */
-    .q:not(:first-of-type){
-      margin-top:22px;
-    }
-
     .q legend{
       font-weight:600;
-      margin:0 0 6px 0;   /* keep Q + answers close */
+      margin-bottom:10px;
       display:block;
     }
-
     .options{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin:0;
+      margin-top:8px;
     }
     .opt{
       border:1px solid #d8d8d8;
@@ -66,7 +57,6 @@
       user-select:none;
     }
     .opt input{ cursor:pointer; }
-
     .actions{
       margin-top:20px;
       display:flex;
@@ -86,7 +76,6 @@
       background:#fff;
       color:#111;
     }
-
     .error{
       display:none;
       margin-top:14px;
@@ -96,7 +85,6 @@
       padding:12px 14px;
       border-radius:12px;
     }
-
     .results{
       display:none;
       margin-top:22px;
@@ -139,11 +127,46 @@
     </div>
 
     <form id="quizForm" novalidate>
-      <div id="questions"></div>
+
+      <!-- Questions -->
+      <script>
+        const questions = [
+          "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task.",
+          "I can give the impression that I’m more competent than I really am.",
+          "I avoid evaluations if possible, and dread others evaluating me.",
+          "When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future.",
+          "I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.",
+          "I’m afraid people important to me may find out that I’m not as capable as they think I am.",
+          "I tend to remember the incidents in which I have not done my best more than those times I have done my best.",
+          "I rarely do a project or task as well as I’d like to do it.",
+          "Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.",
+          "It’s hard for me to accept compliments or praise about my intelligence or accomplishments.",
+          "At times I feel my success has been due to some kind of luck.",
+          "I’m disappointed at times in my present accomplishments and think I should have accomplished much more.",
+          "Sometimes I’m afraid others will discover how much knowledge or ability I really lack.",
+          "I’m often afraid that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
+          "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.",
+          "If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.",
+          "I often compare my ability to those around me and think they may be more intelligent than I am.",
+          "I often worry about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.",
+          "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.",
+          "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement."
+        ];
+
+        document.write(
+//          <li></li>
+            questions.map((q, i) => `
+            <fieldset class="q">
+              <legend>${i+1}. ${q}</legend>
+              <div class="options" data-q="q${i+1}"></div>
+            </fieldset>
+          `).join("")
+        );
+      </script>
 
       <div class="actions">
-        <button type="button" id="scoreBtn">See my result</button>
-        <button type="button" class="secondary" id="resetBtn">Reset</button>
+        <button type="button" onclick="scoreQuiz()">See my result</button>
+        <button type="button" class="secondary" onclick="resetQuiz()">Reset</button>
       </div>
 
       <div id="errorBox" class="error"></div>
@@ -161,119 +184,48 @@
   </div>
 
   <script>
-    const questions = [
-      "I have often succeeded on a test or task even though I was concerned I would not do well before I undertook the task.",
-      "I can give the impression that I’m more competent than I really am.",
-      "I avoid evaluations if possible, and feel concerned about others evaluating me.",
-      "When people praise me for something I’ve accomplished, I’m concerned I won’t be able to live up to their expectations of me in the future.",
-      "I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.",
-      "I’m concerned people important to me may find out that I’m not as capable as they think I am.",
-      "I tend to remember the incidents in which I have not done my best more than those times I have done my best.",
-      "I rarely do a project or task as well as I’d like to do it.",
-      "Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.",
-      "It’s hard for me to accept compliments or praise about my intelligence or accomplishments.",
-      "At times I feel my success has been due to some kind of luck.",
-      "I’m disappointed at times in my present accomplishments and think I should have accomplished much more.",
-      "Sometimes I’m concerned others will discover how much knowledge or ability I really lack.",
-      "I’m often concerned that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
-      "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.",
-      "If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.",
-      "I often compare my ability to those around me and think they may be more intelligent than I am.",
-      "I often feel concerned about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.",
-      "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.",
-      "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement."
-    ];
-
-    const labels = {
-      1:"Not at all true",
-      2:"Slightly true",
-      3:"Somewhat true",
-      4:"Mostly true",
-      5:"Very true"
-    };
-
-    function buildQuiz(){
-      const container = document.getElementById("questions");
-      container.innerHTML = "";
-
-      questions.forEach((text, idx) => {
-        const i = idx + 1;
-        const fieldset = document.createElement("fieldset");
-        fieldset.className = "q";
-
-        const legend = document.createElement("legend");
-        legend.textContent = `${i}. ${text}`;
-        fieldset.appendChild(legend);
-
-        const options = document.createElement("div");
-        options.className = "options";
-
-        for (let v = 1; v <= 5; v++) {
-          const label = document.createElement("label");
-          label.className = "opt";
-
-          const input = document.createElement("input");
-          input.type = "radio";
-          input.name = `q${i}`;
-          input.value = String(v);
-
-          const span = document.createElement("span");
-          span.textContent = `${v} – ${labels[v]}`;
-
-          label.appendChild(input);
-          label.appendChild(span);
-          options.appendChild(label);
+    (function buildOptions(){
+      const labels = {
+        1:"Not at all true",2:"Slightly true",3:"Somewhat true",4:"Mostly true",5:"Very true"
+      };
+      document.querySelectorAll(".options").forEach(el=>{
+        const qName = el.dataset.q;
+        for(let v=1;v<=5;v++){
+          el.insertAdjacentHTML("beforeend",`
+            <label class="opt">
+              <input type="radio" name="${qName}" value="${v}">
+              <span>${v} – ${labels[v]}</span>
+            </label>
+          `);
         }
-
-        fieldset.appendChild(options);
-        container.appendChild(fieldset);
       });
-    }
+    })();
 
     function scoreQuiz(){
-      const errorBox = document.getElementById("errorBox");
-      const resultsBox = document.getElementById("resultsBox");
-      errorBox.style.display = "none";
-      errorBox.textContent = "";
-
-      let total = 0;
-      let missing = [];
-
-      for (let i = 1; i <= 20; i++) {
-        const chosen = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!chosen) missing.push(i);
-        else total += parseInt(chosen.value, 10);
+      const errorBox=document.getElementById("errorBox");
+      errorBox.style.display="none";
+      let total=0, missing=[];
+      for(let i=1;i<=20;i++){
+        const v=document.querySelector(`input[name="q${i}"]:checked`);
+        if(!v) missing.push(i);
+        else total+=parseInt(v.value,10);
       }
-
-      if (missing.length) {
-        errorBox.textContent = "Please answer all questions.";
-        errorBox.style.display = "block";
-
-        const firstMissing = document.querySelector(`input[name="q${missing[0]}"]`);
-        if (firstMissing) {
-          firstMissing.closest("fieldset").scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-        resultsBox.style.display = "none";
+      if(missing.length){
+        errorBox.textContent="Please answer all questions.";
+        errorBox.style.display="block";
         return;
       }
-
-      const percent = Math.round(((total - 20) / 80) * 100);
+      const percent=Math.round(((total-20)/80)*100);
       document.getElementById("percentScore").textContent = percent + "%";
-      resultsBox.style.display = "block";
-      resultsBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("resultsBox").style.display="block";
+      document.getElementById("resultsBox").scrollIntoView({behavior:"smooth"});
     }
 
     function resetQuiz(){
       document.getElementById("quizForm").reset();
-      document.getElementById("resultsBox").style.display = "none";
-      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("resultsBox").style.display="none";
+      document.getElementById("errorBox").style.display="none";
     }
-
-    // Init
-    buildQuiz();
-    document.getElementById("scoreBtn").addEventListener("click", scoreQuiz);
-    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
   </script>
 </body>
 </html>
-
