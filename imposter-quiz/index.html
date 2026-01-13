@@ -19,6 +19,7 @@
     .wrap{ max-width:var(--max); margin:0 auto; padding:40px 18px 64px; }
     h1{ font-size:28px; margin:0 0 10px; letter-spacing:-0.01em; }
     .lede{ margin:0 0 18px; color:#222; font-size:16px; max-width: 850px; }
+
     .scale{
       border:1px solid #e6e6e6;
       border-radius:14px;
@@ -28,11 +29,13 @@
     }
     .scale strong{ display:block; margin-bottom:8px; }
     .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
+
+    /* extra spacing before each question */
     .q{
       border:1px solid #e6e6e6;
       border-radius:14px;
       padding:16px;
-      margin:12px 0;
+      margin:28px 0 12px; /* blank line effect */
       background:#fff;
     }
     .q legend{
@@ -40,6 +43,7 @@
       margin-bottom:10px;
       display:block;
     }
+
     .options{
       display:flex;
       flex-wrap:wrap;
@@ -57,6 +61,7 @@
       user-select:none;
     }
     .opt input{ cursor:pointer; }
+
     .actions{
       margin-top:20px;
       display:flex;
@@ -76,6 +81,7 @@
       background:#fff;
       color:#111;
     }
+
     .error{
       display:none;
       margin-top:14px;
@@ -85,6 +91,7 @@
       padding:12px 14px;
       border-radius:12px;
     }
+
     .results{
       display:none;
       margin-top:22px;
@@ -128,27 +135,26 @@
 
     <form id="quizForm" novalidate>
 
-      <!-- Questions -->
       <script>
         const questions = [
-          "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task.",
+          "I have often succeeded on a test or task even though I was concerned I would not do well before I undertook the task.",
           "I can give the impression that I’m more competent than I really am.",
-          "I avoid evaluations if possible, and dread others evaluating me.",
-          "When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future.",
+          "I avoid evaluations if possible, and feel concerned about others evaluating me.",
+          "When people praise me for something I’ve accomplished, I’m concerned I won’t be able to live up to their expectations of me in the future.",
           "I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.",
-          "I’m afraid people important to me may find out that I’m not as capable as they think I am.",
+          "I’m concerned people important to me may find out that I’m not as capable as they think I am.",
           "I tend to remember the incidents in which I have not done my best more than those times I have done my best.",
           "I rarely do a project or task as well as I’d like to do it.",
           "Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.",
           "It’s hard for me to accept compliments or praise about my intelligence or accomplishments.",
           "At times I feel my success has been due to some kind of luck.",
           "I’m disappointed at times in my present accomplishments and think I should have accomplished much more.",
-          "Sometimes I’m afraid others will discover how much knowledge or ability I really lack.",
-          "I’m often afraid that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
+          "Sometimes I’m concerned others will discover how much knowledge or ability I really lack.",
+          "I’m often concerned that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
           "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.",
           "If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.",
           "I often compare my ability to those around me and think they may be more intelligent than I am.",
-          "I often worry about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.",
+          "I often feel concerned about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.",
           "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.",
           "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement."
         ];
@@ -205,7 +211,7 @@
       errorBox.style.display="none";
       let total=0, missing=[];
       for(let i=1;i<=20;i++){
-        const v=document.querySelector(`input[name="q${i}"]:checked`);
+        const v=document.querySelector(\`input[name="q\${i}"]:checked\`);
         if(!v) missing.push(i);
         else total+=parseInt(v.value,10);
       }
@@ -228,4 +234,3 @@
   </script>
 </body>
 </html>
-
