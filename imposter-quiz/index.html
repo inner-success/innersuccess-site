@@ -30,17 +30,23 @@
     .scale strong{ display:block; margin-bottom:8px; }
     .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
 
-    /* extra spacing before each question */
+    /* Question block */
     .q{
       border:1px solid #e6e6e6;
       border-radius:14px;
       padding:16px;
-      margin:28px 0 12px; /* blank line effect */
+      margin:0;              /* no extra gap inside the block */
       background:#fff;
     }
+
+    /* Blank line BEFORE each question (between blocks), but keep Q + answers tight */
+    .q:not(:first-of-type){
+      margin-top:22px;       /* this is the blank line before the question */
+    }
+
     .q legend{
       font-weight:600;
-      margin-bottom:10px;
+      margin:0 0 6px 0;      /* keep question and answers close */
       display:block;
     }
 
@@ -48,8 +54,9 @@
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-top:8px;
+      margin:0;              /* keep close to legend */
     }
+
     .opt{
       border:1px solid #d8d8d8;
       border-radius:999px;
@@ -134,7 +141,6 @@
     </div>
 
     <form id="quizForm" novalidate>
-
       <script>
         const questions = [
           "I have often succeeded on a test or task even though I was concerned I would not do well before I undertook the task.",
