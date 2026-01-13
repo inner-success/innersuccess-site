@@ -1,11 +1,438 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Leadership Quiz</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leadership Questionnaire</title>
+
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+
+  <style>
+    :root { --max: 980px; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:#111;
+      background:#fff;
+      line-height:1.45;
+    }
+    .wrap{ max-width:var(--max); margin:0 auto; padding:40px 18px 64px; }
+    h1{ font-size:28px; margin:0 0 10px; letter-spacing:-0.01em; }
+    .lede{ margin:0 0 14px; color:#222; font-size:16px; max-width: 900px; }
+    .note{
+      margin:0 0 18px;
+      color:#222;
+      font-size:14px;
+      max-width: 900px;
+    }
+
+    .scale{
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:14px 16px;
+      margin:18px 0 22px;
+      background:#fff;
+    }
+    .scale strong{ display:block; margin-bottom:8px; }
+    .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
+
+    fieldset.q{
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:16px;
+      margin:0;
+      background:#fff;
+    }
+    /* blank line before each question (between blocks) */
+    fieldset.q + fieldset.q{
+      margin-top:22px;
+    }
+    fieldset.q legend{
+      font-weight:600;
+      margin:0 0 6px 0;
+      padding:0;
+    }
+
+    .options{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:0;
+    }
+    .opt{
+      border:1px solid #d8d8d8;
+      border-radius:999px;
+      padding:8px 10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .opt input[type="radio"]{
+      width:16px;
+      height:16px;
+      accent-color:#111;
+    }
+
+    .actions{
+      margin-top:20px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    button{
+      border:1px solid #111;
+      background:#111;
+      color:#fff;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#fff;
+      color:#111;
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      border:1px solid #f0c2c2;
+      background:#fff5f5;
+      color:#7a1f1f;
+      padding:12px 14px;
+      border-radius:12px;
+    }
+
+    .results{
+      display:none;
+      margin-top:22px;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:16px;
+      background:#fff;
+    }
+    .results h2{ margin:0 0 8px; font-size:18px; }
+    .percent{
+      font-size:32px;
+      font-weight:700;
+      margin-top:6px;
+    }
+    .result-note{
+      margin-top:10px;
+      font-size:14px;
+      color:#222;
+      max-width: 900px;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Leadership Quiz</h1>
-  <p>The leadership quiz will appear here.</p>
+  <div class="wrap">
+    <h1>Leadership Questionnaire</h1>
+
+    <p class="lede">
+      This questionnaire is a quick way to assess the day-to-day impact of unhelpful blocks and beliefs on high performance,
+      including the extent to which identity can influence decisions and interactions in an executive role.
+    </p>
+
+    <p class="note">
+      This questionnaire is anonymous. No answers or results are stored.
+      Please make a note of your percentage score when you finish.
+    </p>
+
+    <div class="scale">
+      <strong>Response scale</strong>
+      <ul>
+        <li>1 – Not at all true</li>
+        <li>2 – Slightly true</li>
+        <li>3 – Somewhat true</li>
+        <li>4 – Mostly true</li>
+        <li>5 – Very true</li>
+      </ul>
+    </div>
+
+    <form id="quizForm" novalidate>
+
+      <fieldset class="q">
+        <legend>1. I have often succeeded on a test or task even though I was concerned I would not do well before I undertook the task.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q1" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q1" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q1" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q1" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q1" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>2. I can give the impression that I’m more competent than I really am.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q2" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q2" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q2" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q2" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q2" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>3. I avoid evaluations if possible, and feel concerned about others evaluating me.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q3" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q3" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q3" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q3" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q3" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>4. When people praise me for something I’ve accomplished, I’m concerned I won’t be able to live up to their expectations of me in the future.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q4" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q4" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q4" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q4" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q4" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>5. I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q5" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q5" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q5" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q5" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q5" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>6. I’m concerned people important to me may find out that I’m not as capable as they think I am.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q6" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q6" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q6" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q6" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q6" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>7. I tend to remember the incidents in which I have not done my best more than those times I have done my best.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q7" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q7" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q7" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q7" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q7" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>8. I rarely do a project or task as well as I’d like to do it.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q8" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q8" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q8" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q8" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q8" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>9. Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q9" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q9" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q9" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q9" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q9" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>10. It’s hard for me to accept compliments or praise about my intelligence or accomplishments.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q10" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q10" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q10" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q10" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q10" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>11. At times I feel my success has been due to some kind of luck.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q11" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q11" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q11" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q11" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q11" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>12. I’m disappointed at times in my present accomplishments and think I should have accomplished much more.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q12" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q12" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q12" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q12" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q12" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>13. Sometimes I’m concerned others will discover how much knowledge or ability I really lack.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q13" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q13" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q13" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q13" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q13" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>14. I’m often concerned that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q14" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q14" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q14" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q14" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q14" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>15. When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q15" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q15" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q15" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q15" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q15" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>16. If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q16" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q16" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q16" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q16" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q16" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>17. I often compare my ability to those around me and think they may be more intelligent than I am.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q17" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q17" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q17" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q17" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q17" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>18. I often feel concerned about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q18" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q18" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q18" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q18" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q18" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>19. If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q19" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q19" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q19" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q19" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q19" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>20. I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement.</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q20" value="1"> <span>1 – Not at all true</span></label>
+          <label class="opt"><input type="radio" name="q20" value="2"> <span>2 – Slightly true</span></label>
+          <label class="opt"><input type="radio" name="q20" value="3"> <span>3 – Somewhat true</span></label>
+          <label class="opt"><input type="radio" name="q20" value="4"> <span>4 – Mostly true</span></label>
+          <label class="opt"><input type="radio" name="q20" value="5"> <span>5 – Very true</span></label>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" id="scoreBtn">See my result</button>
+        <button type="button" class="secondary" id="resetBtn">Reset</button>
+      </div>
+
+      <div id="errorBox" class="error"></div>
+
+      <div id="resultsBox" class="results">
+        <h2>Your result</h2>
+        <div class="percent" id="percentScore">–</div>
+        <p class="result-note">
+          Please make a note of this percentage score. This questionnaire is anonymous and no results are stored.
+          Share your score with the coach who sent you this link.
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function scoreQuiz(){
+      const errorBox = document.getElementById("errorBox");
+      const resultsBox = document.getElementById("resultsBox");
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+
+      let total = 0;
+      let missing = [];
+
+      for (let i = 1; i <= 20; i++) {
+        const chosen = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!chosen) missing.push(i);
+        else total += parseInt(chosen.value, 10);
+      }
+
+      if (missing.length) {
+        errorBox.textContent = "Please answer all questions.";
+        errorBox.style.display = "block";
+        const first = document.querySelector(`input[name="q${missing[0]}"]`);
+        if (first) first.closest("fieldset").scrollIntoView({ behavior:"smooth", block:"center" });
+        resultsBox.style.display = "none";
+        return;
+      }
+
+      const percent = Math.round(((total - 20) / 80) * 100);
+      document.getElementById("percentScore").textContent = percent + "%";
+
+      resultsBox.style.display = "block";
+      resultsBox.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    function resetQuiz(){
+      document.getElementById("quizForm").reset();
+      document.getElementById("resultsBox").style.display = "none";
+      document.getElementById("errorBox").style.display = "none";
+    }
+
+    document.getElementById("scoreBtn").addEventListener("click", scoreQuiz);
+    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+  </script>
 </body>
 </html>
