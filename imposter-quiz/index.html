@@ -131,20 +131,20 @@
       <!-- Questions -->
       <script>
         const questions = [
-          "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task.",
+          "I have often succeeded on a test or task even though I was concerned I would not do well before I undertook the task.",
           "I can give the impression that I’m more competent than I really am.",
           "I avoid evaluations if possible, and dread others evaluating me.",
-          "When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future.",
+          "When people praise me for something I’ve accomplished, I’m concerned I won’t be able to live up to their expectations of me in the future.",
           "I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.",
-          "I’m afraid people important to me may find out that I’m not as capable as they think I am.",
+          "I’m concerned people important to me may find out that I’m not as capable as they think I am.",
           "I tend to remember the incidents in which I have not done my best more than those times I have done my best.",
           "I rarely do a project or task as well as I’d like to do it.",
           "Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.",
           "It’s hard for me to accept compliments or praise about my intelligence or accomplishments.",
           "At times I feel my success has been due to some kind of luck.",
           "I’m disappointed at times in my present accomplishments and think I should have accomplished much more.",
-          "Sometimes I’m afraid others will discover how much knowledge or ability I really lack.",
-          "I’m often afraid that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
+          "Sometimes I’m concerned others will discover how much knowledge or ability I really lack.",
+          "I’m often concerned that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
           "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.",
           "If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.",
           "I often compare my ability to those around me and think they may be more intelligent than I am.",
@@ -154,10 +154,9 @@
         ];
 
         document.write(
-//          <li></li>
-            <li></li>
-            questions.map((q, i) => `
-            <fieldset class="q">
+//          questions.map((q, i) => `
+              <li></li>
+              <fieldset class="q">
               <legend>${i+1}. ${q}</legend>
               <div class="options" data-q="q${i+1}"></div>
             </fieldset>
