@@ -1,11 +1,370 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Imposter Syndrome Quiz</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Imposter Syndrome Questionnaire</title>
+
+  <!-- Optional: keep this page out of search results -->
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+
+  <style>
+    :root { --max: 980px; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:#111;
+      background:#fff;
+      line-height:1.45;
+    }
+    .wrap{ max-width:var(--max); margin:0 auto; padding:40px 18px 64px; }
+    h1{ font-size:28px; margin:0 0 10px; letter-spacing:-0.01em; }
+    .lede{ margin:0 0 18px; color:#222; font-size:16px; max-width: 850px; }
+    .scale{
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:14px 16px;
+      margin:18px 0 22px;
+      background:#fff;
+    }
+    .scale strong{ display:block; margin-bottom:8px; }
+    .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
+    .q{
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:16px;
+      margin:12px 0;
+      background:#fff;
+    }
+    .q legend{
+      font-weight:600;
+      margin-bottom:10px;
+      display:block;
+    }
+    .options{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+    .opt{
+      border:1px solid #d8d8d8;
+      border-radius:999px;
+      padding:8px 10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .opt input{ cursor:pointer; }
+    .actions{
+      margin-top:20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    button{
+      border:1px solid #111;
+      background:#111;
+      color:#fff;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#fff;
+      color:#111;
+    }
+    .note{ color:#444; font-size:13px; margin:10px 0 0; }
+    .error{
+      display:none;
+      margin-top:14px;
+      border:1px solid #f0c2c2;
+      background:#fff5f5;
+      color:#7a1f1f;
+      padding:12px 14px;
+      border-radius:12px;
+    }
+    .results{
+      display:none;
+      margin-top:22px;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:16px;
+      background:#fff;
+    }
+    .results h2{ margin:0 0 8px; font-size:18px; }
+    .kpis{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:10px 0 0;
+    }
+    .kpi{
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:12px 14px;
+      min-width: 220px;
+      background:#fff;
+    }
+    .kpi .label{ color:#444; font-size:13px; margin-bottom:6px; }
+    .kpi .value{ font-size:22px; font-weight:700; }
+    a { color:#111; }
+    .quiet-link{
+      margin-top:12px;
+      font-size:14px;
+      color:#222;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Imposter Syndrome Quiz</h1>
-  <p>The imposter syndrome quiz will appear here.</p>
+  <div class="wrap">
+    <h1>Imposter Syndrome Questionnaire</h1>
+    <p class="lede">
+      Answer each statement using the scale below. This questionnaire scores from 20 to 100 based on your responses.
+      Your score is calculated locally in your browser. No data is collected or stored.
+    </p>
+
+    <div class="scale">
+      <strong>Response scale</strong>
+      <ul>
+        <li><strong>1</strong> = Not at all true</li>
+        <li><strong>2</strong> = Slightly true</li>
+        <li><strong>3</strong> = Somewhat true</li>
+        <li><strong>4</strong> = Mostly true</li>
+        <li><strong>5</strong> = Very true</li>
+      </ul>
+    </div>
+
+    <form id="quizForm" novalidate>
+      <!-- Questions -->
+      <fieldset class="q">
+        <legend>1. I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task.</legend>
+        <div class="options" data-q="q1"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>2. I can give the impression that I’m more competent than I really am.</legend>
+        <div class="options" data-q="q2"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>3. I avoid evaluations if possible, and dread others evaluating me.</legend>
+        <div class="options" data-q="q3"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>4. When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future.</legend>
+        <div class="options" data-q="q4"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>5. I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.</legend>
+        <div class="options" data-q="q5"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>6. I’m afraid people important to me may find out that I’m not as capable as they think I am.</legend>
+        <div class="options" data-q="q6"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>7. I tend to remember the incidents in which I have not done my best more than those times I have done my best.</legend>
+        <div class="options" data-q="q7"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>8. I rarely do a project or task as well as I’d like to do it.</legend>
+        <div class="options" data-q="q8"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>9. Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.</legend>
+        <div class="options" data-q="q9"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>10. It’s hard for me to accept compliments or praise about my intelligence or accomplishments.</legend>
+        <div class="options" data-q="q10"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>11. At times I feel my success has been due to some kind of luck.</legend>
+        <div class="options" data-q="q11"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>12. I’m disappointed at times in my present accomplishments and think I should have accomplished much more.</legend>
+        <div class="options" data-q="q12"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>13. Sometimes I’m afraid others will discover how much knowledge or ability I really lack.</legend>
+        <div class="options" data-q="q13"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>14. I’m often afraid that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.</legend>
+        <div class="options" data-q="q14"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>15. When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.</legend>
+        <div class="options" data-q="q15"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>16. If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.</legend>
+        <div class="options" data-q="q16"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>17. I often compare my ability to those around me and think they may be more intelligent than I am.</legend>
+        <div class="options" data-q="q17"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>18. I often worry about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.</legend>
+        <div class="options" data-q="q18"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>19. If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.</legend>
+        <div class="options" data-q="q19"></div>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>20. I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement.</legend>
+        <div class="options" data-q="q20"></div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" onclick="scoreQuiz()">See my score</button>
+        <button type="button" class="secondary" onclick="resetQuiz()">Reset</button>
+      </div>
+
+      <div id="errorBox" class="error"></div>
+
+      <div id="resultsBox" class="results" aria-live="polite">
+        <h2>Your score</h2>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Total (out of 100)</div>
+            <div class="value" id="totalScore">–</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Percentage</div>
+            <div class="value" id="percentScore">–</div>
+          </div>
+        </div>
+
+        <p class="quiet-link" id="interpretation"></p>
+
+        <!-- Optional: show this only after results -->
+        <p class="quiet-link" id="nextStep" style="display:none;">
+          If you’d like to explore support, you can view the Inner Success facilitators here:
+          <a href="/coaches/">View facilitators</a>.
+        </p>
+      </div>
+
+      <p class="note">
+        This page does not send your answers anywhere. Scores are calculated locally in your browser.
+      </p>
+    </form>
+  </div>
+
+  <script>
+    // Create 1–5 options for each question container
+    (function buildOptions(){
+      const labels = {
+        1: "Not at all true",
+        2: "Slightly true",
+        3: "Somewhat true",
+        4: "Mostly true",
+        5: "Very true"
+      };
+
+      document.querySelectorAll(".options").forEach((el) => {
+        const qName = el.getAttribute("data-q");
+        for (let v = 1; v <= 5; v++) {
+          const id = `${qName}_${v}`;
+          const label = document.createElement("label");
+          label.className = "opt";
+          label.setAttribute("for", id);
+          label.innerHTML = `
+            <input type="radio" id="${id}" name="${qName}" value="${v}">
+            <span><strong>${v}</strong> ${labels[v]}</span>
+          `;
+          el.appendChild(label);
+        }
+      });
+    })();
+
+    function scoreQuiz() {
+      const form = document.getElementById("quizForm");
+      const errorBox = document.getElementById("errorBox");
+      const resultsBox = document.getElementById("resultsBox");
+      const nextStep = document.getElementById("nextStep");
+
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+
+      let total = 0;
+      let missing = [];
+
+      for (let i = 1; i <= 20; i++) {
+        const name = `q${i}`;
+        const chosen = form.querySelector(`input[name="${name}"]:checked`);
+        if (!chosen) {
+          missing.push(i);
+        } else {
+          total += parseInt(chosen.value, 10);
+        }
+      }
+
+      if (missing.length > 0) {
+        errorBox.style.display = "block";
+        errorBox.textContent = `Please answer all questions. Missing: ${missing.join(", ")}.`;
+        // Scroll to first missing question
+        const firstMissing = document.querySelector(`.options[data-q="q${missing[0]}"]`);
+        if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+        resultsBox.style.display = "none";
+        return;
+      }
+
+      // Score ranges: min 20, max 100
+      const percent = Math.round(((total - 20) / 80) * 100);
+
+      document.getElementById("totalScore").textContent = `${total}`;
+      document.getElementById("percentScore").textContent = `${percent}%`;
+
+      // Optional: a light-touch interpretation (edit or remove if you prefer)
+      const interp = document.getElementById("interpretation");
+      let bandText = "";
+      if (percent < 25) bandText = "Low range on this questionnaire.";
+      else if (percent < 50) bandText = "Mid-low range on this questionnaire.";
+      else if (percent < 75) bandText = "Mid-high range on this questionnaire.";
+      else bandText = "High range on this questionnaire.";
+
+      interp.textContent = bandText;
+
+      resultsBox.style.display = "block";
+      nextStep.style.display = "block";
+      resultsBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetQuiz() {
+      const form = document.getElementById("quizForm");
+      form.reset();
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("resultsBox").style.display = "none";
+    }
+  </script>
 </body>
 </html>
+
