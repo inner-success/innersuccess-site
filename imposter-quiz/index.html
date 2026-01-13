@@ -31,4 +31,201 @@
     .q{
       border:1px solid #e6e6e6;
       border-radius:14px;
-      padd
+      padding:16px;
+      margin:12px 0;
+      background:#fff;
+    }
+    .q legend{
+      font-weight:600;
+      margin-bottom:10px;
+      display:block;
+    }
+    .options{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+    .opt{
+      border:1px solid #d8d8d8;
+      border-radius:999px;
+      padding:8px 10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .opt input{ cursor:pointer; }
+    .actions{
+      margin-top:20px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    button{
+      border:1px solid #111;
+      background:#111;
+      color:#fff;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#fff;
+      color:#111;
+    }
+    .error{
+      display:none;
+      margin-top:14px;
+      border:1px solid #f0c2c2;
+      background:#fff5f5;
+      color:#7a1f1f;
+      padding:12px 14px;
+      border-radius:12px;
+    }
+    .results{
+      display:none;
+      margin-top:22px;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:16px;
+      background:#fff;
+    }
+    .results h2{ margin:0 0 8px; font-size:18px; }
+    .percent{
+      font-size:32px;
+      font-weight:700;
+      margin-top:6px;
+    }
+    .quiet-link{
+      margin-top:14px;
+      font-size:14px;
+      color:#222;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Imposter Syndrome Questionnaire</h1>
+    <p class="lede">
+      Answer each statement using the scale below. Your result is shown as a percentage.
+      This questionnaire runs locally in your browser. No data is collected or stored.
+    </p>
+
+    <div class="scale">
+      <strong>Response scale</strong>
+      <ul>
+        <li>1 – Not at all true</li>
+        <li>2 – Slightly true</li>
+        <li>3 – Somewhat true</li>
+        <li>4 – Mostly true</li>
+        <li>5 – Very true</li>
+      </ul>
+    </div>
+
+    <form id="quizForm" novalidate>
+
+      <!-- Questions -->
+      <script>
+        const questions = [
+          "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task.",
+          "I can give the impression that I’m more competent than I really am.",
+          "I avoid evaluations if possible, and dread others evaluating me.",
+          "When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future.",
+          "I sometimes think I obtained my present position or gained my current success because I happened to be in the right place at the right time, or knew the right people.",
+          "I’m afraid people important to me may find out that I’m not as capable as they think I am.",
+          "I tend to remember the incidents in which I have not done my best more than those times I have done my best.",
+          "I rarely do a project or task as well as I’d like to do it.",
+          "Sometimes I feel or believe that my success in life or in my job has been the result of some kind of error.",
+          "It’s hard for me to accept compliments or praise about my intelligence or accomplishments.",
+          "At times I feel my success has been due to some kind of luck.",
+          "I’m disappointed at times in my present accomplishments and think I should have accomplished much more.",
+          "Sometimes I’m afraid others will discover how much knowledge or ability I really lack.",
+          "I’m often afraid that I may fail at a new assignment or undertaking even though I generally do well at what I attempt.",
+          "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success.",
+          "If I receive a great deal of praise and recognition for something I’ve accomplished, I tend to discount the importance of what I’ve done.",
+          "I often compare my ability to those around me and think they may be more intelligent than I am.",
+          "I often worry about not succeeding with a project or test, even though others around me have considerable confidence that I will do well.",
+          "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an established fact.",
+          "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement."
+        ];
+
+        document.write(
+          questions.map((q, i) => `
+            <fieldset class="q">
+              <legend>${i+1}. ${q}</legend>
+              <div class="options" data-q="q${i+1}"></div>
+            </fieldset>
+          `).join("")
+        );
+      </script>
+
+      <div class="actions">
+        <button type="button" onclick="scoreQuiz()">See my result</button>
+        <button type="button" class="secondary" onclick="resetQuiz()">Reset</button>
+      </div>
+
+      <div id="errorBox" class="error"></div>
+
+      <div id="resultsBox" class="results">
+        <h2>Your result</h2>
+        <div class="percent" id="percentScore">–</div>
+
+        <p class="quiet-link">
+          If you’d like to explore support, you can view the Inner Success facilitators here:
+          <a href="/coaches/">View facilitators</a>.
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function buildOptions(){
+      const labels = {
+        1:"Not at all true",2:"Slightly true",3:"Somewhat true",4:"Mostly true",5:"Very true"
+      };
+      document.querySelectorAll(".options").forEach(el=>{
+        const qName = el.dataset.q;
+        for(let v=1;v<=5;v++){
+          el.insertAdjacentHTML("beforeend",`
+            <label class="opt">
+              <input type="radio" name="${qName}" value="${v}">
+              <span>${v} – ${labels[v]}</span>
+            </label>
+          `);
+        }
+      });
+    })();
+
+    function scoreQuiz(){
+      const errorBox=document.getElementById("errorBox");
+      errorBox.style.display="none";
+      let total=0, missing=[];
+      for(let i=1;i<=20;i++){
+        const v=document.querySelector(`input[name="q${i}"]:checked`);
+        if(!v) missing.push(i);
+        else total+=parseInt(v.value,10);
+      }
+      if(missing.length){
+        errorBox.textContent="Please answer all questions.";
+        errorBox.style.display="block";
+        return;
+      }
+      const percent=Math.round(((total-20)/80)*100);
+      document.getElementById("percentScore").textContent = percent + "%";
+      document.getElementById("resultsBox").style.display="block";
+      document.getElementById("resultsBox").scrollIntoView({behavior:"smooth"});
+    }
+
+    function resetQuiz(){
+      document.getElementById("quizForm").reset();
+      document.getElementById("resultsBox").style.display="none";
+      document.getElementById("errorBox").style.display="none";
+    }
+  </script>
+</body>
+</html>
+
