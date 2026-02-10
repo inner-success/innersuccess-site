@@ -3,217 +3,627 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Imposter Syndrome Questionnaire</title>
-
-  <meta name="robots" content="noindex, nofollow, noarchive" />
-
+  <title>Inner Success Quiz</title>
   <style>
-    :root { --max: 980px; }
+    :root{
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --border-strong: #9ca3af;
+      --focus: #111827;
+      --error: #b91c1c;
+      --error-bg: #fef2f2;
+      --card: #f9fafb;
+      --shadow: 0 1px 2px rgba(0,0,0,.06);
+      --radius: 12px;
+      --gap: 32px; /* whitespace gap between question blocks */
+
+      /* keep option sizing consistent so labels can align underneath */
+      --opt-size: 54px;
+      --opt-gap: 10px;
+    }
+
+    * { box-sizing: border-box; }
     body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      color:#111;
-      background:#fff;
-      line-height:1.45;
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.4;
     }
-    .wrap{ max-width:var(--max); margin:0 auto; padding:40px 18px 64px; }
-    h1{ font-size:28px; margin:0 0 10px; letter-spacing:-0.01em; }
-    .lede{ margin:0 0 18px; color:#222; font-size:16px; max-width: 850px; }
 
-    .scale{
-      border:1px solid #e6e6e6;
-      border-radius:14px;
-      padding:14px 16px;
-      margin:18px 0 22px;
-      background:#fff;
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 16px 44px;
     }
-    .scale strong{ display:block; margin-bottom:8px; }
-    .scale ul{ margin:8px 0 0 18px; padding:0; color:#333; }
 
-    fieldset.q{
-      border:1px solid #e6e6e6;
-      border-radius:14px;
-      padding:16px;
-      margin:0;
-      background:#fff;
+    header{ margin-bottom: 18px; }
+
+    h1{
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: -0.02em;
     }
-    fieldset.q + fieldset.q{
-      margin-top:22px;
+
+    .sub{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
     }
-    fieldset.q legend{
-      font-weight:600;
-      margin:0 0 6px 0;
-      padding:0;
+
+    .panel{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow);
+      margin: 14px 0 22px;
+    }
+
+    .scale-key-title{
+      margin: 0 0 10px;
+      font-weight: 650;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .scale-row{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .scale-item{
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 8px;
+      justify-items: start;
+    }
+
+    .box{
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      background: #fff;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .scale-label{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Error summary */
+    .error-summary{
+      display: none;
+      border: 1px solid var(--error);
+      background: var(--error-bg);
+      border-radius: var(--radius);
+      padding: 12px 12px;
+      margin: 0 0 18px;
+    }
+    .error-summary.show{ display: block; }
+    .error-title{
+      margin: 0 0 6px;
+      font-weight: 750;
+      color: var(--error);
+      font-size: 14px;
+    }
+    .error-body{
+      margin: 0;
+      color: #7f1d1d;
+      font-size: 14px;
+    }
+
+    /* Questions */
+    form{ margin: 0; }
+
+    .q{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      margin-bottom: var(--gap); /* mandatory whitespace gap */
+      scroll-margin-top: 16px;
+    }
+
+    .q.missing{
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    fieldset{
+      border: 0;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+
+    legend{
+      font-weight: 700;
+      font-size: 15px;
+      padding: 0;
+      margin-bottom: 10px;
     }
 
     .options{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:0;
+      display: flex;
+      gap: var(--opt-gap);
+      align-items: stretch;
+      flex-wrap: wrap;
     }
-    .opt{
-      border:1px solid #d8d8d8;
-      border-radius:999px;
-      padding:8px 10px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      user-select:none;
-    }
+
+    /* Hide native radios but keep accessible */
     .opt input[type="radio"]{
-      width:16px;
-      height:16px;
-      accent-color:#111;
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
     }
 
+    .opt{
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .opt label{
+      display: grid;
+      place-items: center;
+      width: var(--opt-size);
+      height: var(--opt-size);
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: #fff;
+      font-weight: 750;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .05s ease, border-color .15s ease, background-color .15s ease;
+    }
+
+    .opt label:active{ transform: scale(0.99); }
+
+    .opt input[type="radio"]:focus-visible + label{
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .opt input[type="radio"]:checked + label{
+      border-color: var(--text);
+      background: #f3f4f6;
+    }
+
+    .opt .num{
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* This is only used on mobile (see media query) */
+    .opt .help{
+      display: none;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.2;
+      padding: 0 8px;
+    }
+
+    /* Under-box labels (desktop/tablet): align directly beneath the 1–5 boxes */
+    .mini-labels{
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, var(--opt-size));
+      gap: var(--opt-gap);
+      align-items: start;
+      justify-content: start;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-labels .slot{
+      min-height: 2.2em; /* keeps row height stable even when some slots empty */
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .mini-labels .slot strong{
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .mini-labels .slot.empty{
+      visibility: hidden; /* keep spacing without visual noise */
+    }
+
+    /* Actions + results */
     .actions{
-      margin-top:20px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    button{
-      border:1px solid #111;
-      background:#111;
-      color:#fff;
-      border-radius:12px;
-      padding:12px 16px;
-      font-weight:600;
-      cursor:pointer;
-    }
-    button.secondary{
-      background:#fff;
-      color:#111;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 6px;
     }
 
-    .error{
-      display:none;
-      margin-top:14px;
-      border:1px solid #f0c2c2;
-      background:#fff5f5;
-      color:#7a1f1f;
-      padding:12px 14px;
-      border-radius:12px;
+    button{
+      appearance: none;
+      border: 1px solid var(--text);
+      background: var(--text);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+
+    button.secondary{
+      background: #fff;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    button:focus-visible{
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
     }
 
     .results{
-      display:none;
-      margin-top:22px;
-      border:1px solid #e6e6e6;
-      border-radius:14px;
-      padding:16px;
-      background:#fff;
+      display: none;
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow);
     }
-    .results h2{ margin:0 0 8px; font-size:18px; }
-    .percent{
-      font-size:32px;
-      font-weight:700;
-      margin-top:6px;
+    .results.show{ display: block; }
+
+    .results h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
     }
-    .quiet-link{
-      margin-top:14px;
-      font-size:14px;
-      color:#222;
+
+    .kv{
+      margin: 0;
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .kv b{ font-weight: 800; }
+
+    /* Mobile: make boxes vertical; labels should follow the selected design intent */
+    @media (max-width: 640px){
+      .scale-row{ grid-template-columns: 1fr; }
+      .scale-item{
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto;
+        align-items: center;
+        justify-items: start;
+        gap: 10px;
+      }
+      .scale-label{ font-size: 13px; }
+
+      .options{
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      /* On mobile, show the per-option help text inside the box for 1/3/5.
+         Hide the underneath row because the boxes aren't in a row anymore. */
+      .mini-labels{ display: none; }
+
+      .opt label{
+        width: 100%;
+        height: auto;
+        padding: 12px 0 10px;
+        grid-template-rows: auto auto;
+      }
+      .opt .help{ display: block; }
+      .opt .help:empty{ display: none; }
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <h1>Imposter Syndrome Questionnaire</h1>
-    <p class="lede">
-      Answer each statement using the scale below. Your result is shown as a percentage.
-      This questionnaire runs locally in your browser. No data is collected or stored.
-    </p>
+    <header>
+      <h1>Inner Success Quiz</h1>
+      <p class="sub">Answer every question, then click calculate to see your score.</p>
+    </header>
 
-    <div class="scale">
-      <strong>Response scale</strong>
-      <ul>
-        <li>1 – Not at all true</li>
-        <li>2 – Slightly true</li>
-        <li>3 – Somewhat true</li>
-        <li>4 – Mostly true</li>
-        <li>5 – Very true</li>
-      </ul>
+    <div class="panel" aria-label="Scale key">
+      <p class="scale-key-title">Scale key</p>
+      <div class="scale-row" role="list">
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">1</div>
+          <div class="scale-label">Not at all true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">2</div>
+          <div class="scale-label">Rarely true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">3</div>
+          <div class="scale-label">Sometimes true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">4</div>
+          <div class="scale-label">Often true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">5</div>
+          <div class="scale-label">Very true</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorSummary" class="error-summary" role="alert" aria-live="assertive">
+      <p class="error-title">You missed question(s).</p>
+      <p id="errorBody" class="error-body"></p>
     </div>
 
     <form id="quizForm" novalidate>
-
-      <!-- QUESTIONS 1–20 (unchanged, static HTML) -->
-      <!-- For brevity, not repeated here — keep exactly as in your current file -->
+      <div id="questions"></div>
 
       <div class="actions">
-        <button type="button" id="scoreBtn">See my result</button>
-        <button type="button" class="secondary" id="resetBtn">Reset</button>
+        <button type="button" id="calcBtn">Calculate score</button>
+        <button type="button" id="resetBtn" class="secondary">Reset</button>
       </div>
 
-      <div id="errorBox" class="error"></div>
-
-      <div id="resultsBox" class="results">
-        <h2>Your result</h2>
-        <div class="percent" id="percentScore">–</div>
-
-        <p class="quiet-link" id="impactNote" style="display:none;">
-          If your score is over 50%, imposter syndrome is significantly affecting you.
-        </p>
-
-        <p class="quiet-link">
-          If you’d like to explore support, you can view the Inner Success facilitators here:
-          <a href="https://innersuccess.me/facilitators/">View facilitators</a>.
+      <div id="results" class="results" aria-live="polite">
+        <h2>Your results</h2>
+        <p class="kv">
+          <span><b>Percentage:</b> <span id="pctScore">—</span></span>
         </p>
       </div>
     </form>
   </div>
 
   <script>
-    function scoreQuiz(){
-      const errorBox = document.getElementById("errorBox");
-      const resultsBox = document.getElementById("resultsBox");
-      const impactNote = document.getElementById("impactNote");
+    const QUESTIONS = [
+      "I have often succeeded on a test or task even though I was worried I would not do well before I undertook the task",
+      "I can give the impression that I’m more competent than I really am",
+      "I avoid evaluations if possible, and dread others evaluating me",
+      "When people praise me for something I’ve accomplished, I’m concerned I won’t be able to live up to their expectations of me in the future",
+      "I sometimes think I obtained my present position or gained my present success because I happened to be in the right place at the right time or knew the right people",
+      "I’m worried people important to me may find out that I’m not as capable as they think I am",
+      "I tend to remember the incidents in which I have not done my best more than those times I have done my best",
+      "I rarely do a project or task as well as I’d like to do it",
+      "Sometimes I feel or believe that my success in my life or in my job has been the result of some kind of error",
+      "It’s hard for me to accept compliments or praise about my intelligence or accomplishments",
+      "At times, I feel my success has been due to some kind of luck",
+      "I’m disappointed at times in my present accomplishments and think I should have accomplished much more",
+      "Sometimes I’m worried others will discover how much knowledge or ability I really lack",
+      "I’m often concerned that I may fail at a new assignment or undertaking in my job or studies even though I generally do well at what I attempt",
+      "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success",
+      "If I receive a great deal of praise and recognition for something I’ve done, I tend to discount the importance of what I’ve done",
+      "I often compare my ability to those around me and think they may be more intelligent than I am",
+      "I often worry about not succeeding with a project or evaluation, even though others around me have considerable confidence that I will do well",
+      "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an accomplished fact",
+      "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement"
+    ];
 
-      errorBox.style.display = "none";
-      impactNote.style.display = "none";
+    const SCALE = [
+      { value: 1, label: "Not at all true", showInlineLabel: true },
+      { value: 2, label: "Rarely true", showInlineLabel: false },
+      { value: 3, label: "Sometimes true", showInlineLabel: true },
+      { value: 4, label: "Often true", showInlineLabel: false },
+      { value: 5, label: "Very true", showInlineLabel: true },
+    ];
 
+    const MIN_TOTAL = 20;
+    const MAX_TOTAL = 100;
+
+    const questionsEl = document.getElementById("questions");
+    const formEl = document.getElementById("quizForm");
+    const errorSummaryEl = document.getElementById("errorSummary");
+    const errorBodyEl = document.getElementById("errorBody");
+    const resultsEl = document.getElementById("results");
+    const pctScoreEl = document.getElementById("pctScore");
+    const calcBtn = document.getElementById("calcBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function renderQuestions() {
+      questionsEl.innerHTML = "";
+
+      QUESTIONS.forEach((text, idx) => {
+        const qNum = idx + 1;
+        const fieldsetId = `q${qNum}`;
+        const groupName = `q_${qNum}`;
+
+        const qWrap = document.createElement("div");
+        qWrap.className = "q";
+        qWrap.id = `block_${fieldsetId}`;
+
+        const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute("data-qnum", String(qNum));
+        // Focusable so we can move focus on validation errors
+        fieldset.tabIndex = -1;
+
+        const legend = document.createElement("legend");
+        legend.textContent = `Q${qNum}. ${text}`;
+        fieldset.appendChild(legend);
+
+        const options = document.createElement("div");
+        options.className = "options";
+
+        SCALE.forEach((s) => {
+          const opt = document.createElement("div");
+          opt.className = "opt";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = groupName;
+          input.value = String(s.value);
+          input.id = `${fieldsetId}_${s.value}`;
+
+          const label = document.createElement("label");
+          label.setAttribute("for", input.id);
+          label.title = s.label;
+
+          const num = document.createElement("span");
+          num.className = "num";
+          num.textContent = String(s.value);
+
+          const help = document.createElement("span");
+          help.className = "help";
+          // On mobile we show these; on desktop they’re hidden (and we use the underneath row)
+          help.textContent = s.showInlineLabel ? s.label : "";
+
+          label.appendChild(num);
+          label.appendChild(help);
+
+          input.addEventListener("change", () => {
+            qWrap.classList.remove("missing");
+            if (errorSummaryEl.classList.contains("show")) {
+              updateMissingUI();
+            }
+          });
+
+          opt.appendChild(input);
+          opt.appendChild(label);
+          options.appendChild(opt);
+        });
+
+        fieldset.appendChild(options);
+
+        // Under-box labels aligned beneath boxes 1–5 (only show text under 1,3,5)
+        const mini = document.createElement("div");
+        mini.className = "mini-labels";
+        mini.id = `mini_${fieldsetId}`;
+
+        // Create 5 slots so alignment is guaranteed
+        for (let i = 1; i <= 5; i++) {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+
+          const scaleDef = SCALE.find(s => s.value === i);
+          if (scaleDef && scaleDef.showInlineLabel) {
+            slot.textContent = scaleDef.label;
+          } else {
+            slot.classList.add("empty");
+           slot.textContent = ".";
+           slot.setAttribute("aria-hidden", "true");
+          }
+
+
+          mini.appendChild(slot);
+        }
+
+        fieldset.appendChild(mini);
+
+        qWrap.appendChild(fieldset);
+        questionsEl.appendChild(qWrap);
+      });
+    }
+
+    function getAnswerValue(qNum) {
+      const checked = formEl.querySelector(`input[name="q_${qNum}"]:checked`);
+      return checked ? Number(checked.value) : null;
+    }
+
+    function computeScore() {
       let total = 0;
-      let missing = [];
+      for (let i = 1; i <= QUESTIONS.length; i++) {
+        const v = getAnswerValue(i);
+        total += v;
+      }
+      const pct = Math.round(((total - MIN_TOTAL) / (MAX_TOTAL - MIN_TOTAL)) * 100);
+      return { total, pct };
+    }
 
-      for (let i = 1; i <= 20; i++) {
-        const chosen = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!chosen) missing.push(i);
-        else total += parseInt(chosen.value, 10);
+    function findMissingQuestions() {
+      const missing = [];
+      for (let i = 1; i <= QUESTIONS.length; i++) {
+        if (getAnswerValue(i) === null) missing.push(i);
+      }
+      return missing;
+    }
+
+    function updateMissingUI() {
+      const missing = findMissingQuestions();
+
+      document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
+
+      if (missing.length === 0) {
+        errorSummaryEl.classList.remove("show");
+        errorBodyEl.textContent = "";
+        return { missing, firstMissingBlock: null };
       }
 
-      if (missing.length) {
-        errorBox.textContent = "Please answer all questions.";
-        errorBox.style.display = "block";
-        const first = document.querySelector(`input[name="q${missing[0]}"]`);
-        if (first) first.closest("fieldset").scrollIntoView({ behavior:"smooth", block:"center" });
-        resultsBox.style.display = "none";
+      missing.forEach((qNum) => {
+        const block = document.getElementById(`block_q${qNum}`);
+        if (block) block.classList.add("missing");
+      });
+
+      const list = missing.map(n => `Q${n}`).join(", ");
+      errorBodyEl.textContent = `You missed ${missing.length} question(s): ${list}.`;
+      errorSummaryEl.classList.add("show");
+
+      const firstMissingBlock = document.getElementById(`block_q${missing[0]}`);
+      return { missing, firstMissingBlock };
+    }
+
+    function scrollToFirstMissing(firstMissingBlock) {
+      if (!firstMissingBlock) return;
+      firstMissingBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+      const fieldset = firstMissingBlock.querySelector("fieldset");
+      if (fieldset) fieldset.focus({ preventScroll: true });
+    }
+
+    function showResults(pct) {
+      pctScoreEl.textContent = `${pct}%`;
+      resultsEl.classList.add("show");
+    }
+
+    function clearResults() {
+      resultsEl.classList.remove("show");
+      pctScoreEl.textContent = "—";
+    }
+
+    function resetAll() {
+      formEl.reset();
+      clearResults();
+      errorSummaryEl.classList.remove("show");
+      errorBodyEl.textContent = "";
+      document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    calcBtn.addEventListener("click", () => {
+      clearResults();
+      const { missing, firstMissingBlock } = updateMissingUI();
+
+      if (missing.length > 0) {
+        errorSummaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(() => scrollToFirstMissing(firstMissingBlock), 250);
         return;
       }
 
-      const percent = Math.round(((total - 20) / 80) * 100);
-      document.getElementById("percentScore").textContent = percent + "%";
+      const { pct } = computeScore();
+      showResults(pct);
+      errorSummaryEl.classList.remove("show");
+      errorBodyEl.textContent = "";
+      resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
 
-      if (percent > 50) {
-        impactNote.style.display = "block";
-      }
+    resetBtn.addEventListener("click", resetAll);
 
-      resultsBox.style.display = "block";
-      resultsBox.scrollIntoView({ behavior:"smooth", block:"start" });
-    }
-
-    function resetQuiz(){
-      document.getElementById("quizForm").reset();
-      document.getElementById("resultsBox").style.display = "none";
-      document.getElementById("errorBox").style.display = "none";
-      document.getElementById("impactNote").style.display = "none";
-    }
-
-    document.getElementById("scoreBtn").addEventListener("click", scoreQuiz);
-    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+    renderQuestions();
   </script>
 </body>
 </html>
