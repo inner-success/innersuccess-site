@@ -23,6 +23,22 @@
       --opt-size: 54px;
       --opt-gap: 10px;
     }
+    .result-note{
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text);
+   }
+
+  .result-note a{
+    color: var(--text);
+    text-decoration: underline;
+    font-weight: 700;
+   }
+
+   .result-note a:focus-visible{
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+   }
 
     * { box-sizing: border-box; }
     body{
@@ -385,11 +401,19 @@
       </div>
 
       <div id="results" class="results" aria-live="polite">
-        <h2>Your results</h2>
-        <p class="kv">
-          <span><b>Percentage:</b> <span id="pctScore">—</span></span>
-        </p>
-      </div>
+       <h2>Your results</h2>
+
+       <p class="kv">
+       <span><b>Percentage:</b> <span id="pctScore">—</span></span>
+       </p>
+
+       <p class="result-note">
+        Scores over 50% indicate imposter syndrome is having an impact in your life and career.
+        If you would like to eliminate imposter syndrome,
+       <a href="/facilitators/">click here</a> for trained Inner Success facilitators.
+       </p>
+     </div>
+
     </form>
   </div>
 
