@@ -18,6 +18,10 @@
       --shadow: 0 1px 2px rgba(0,0,0,.06);
       --radius: 12px;
       --gap: 32px; /* whitespace gap between question blocks */
+
+      /* keep option sizing consistent so labels can align underneath */
+      --opt-size: 54px;
+      --opt-gap: 10px;
     }
 
     * { box-sizing: border-box; }
@@ -35,9 +39,7 @@
       padding: 28px 16px 44px;
     }
 
-    header{
-      margin-bottom: 18px;
-    }
+    header{ margin-bottom: 18px; }
 
     h1{
       margin: 0 0 6px;
@@ -154,7 +156,7 @@
 
     .options{
       display: flex;
-      gap: 10px;
+      gap: var(--opt-gap);
       align-items: stretch;
       flex-wrap: wrap;
     }
@@ -178,8 +180,8 @@
     .opt label{
       display: grid;
       place-items: center;
-      width: 54px;
-      height: 54px;
+      width: var(--opt-size);
+      height: var(--opt-size);
       border-radius: 14px;
       border: 1px solid var(--border-strong);
       background: #fff;
@@ -189,9 +191,7 @@
       transition: transform .05s ease, border-color .15s ease, background-color .15s ease;
     }
 
-    .opt label:active{
-      transform: scale(0.99);
-    }
+    .opt label:active{ transform: scale(0.99); }
 
     .opt input[type="radio"]:focus-visible + label{
       outline: 3px solid var(--focus);
@@ -203,18 +203,48 @@
       background: #f3f4f6;
     }
 
+    .opt .num{
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* This is only used on mobile (see media query) */
+    .opt .help{
+      display: none;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.2;
+      padding: 0 8px;
+    }
+
+    /* Under-box labels (desktop/tablet): align directly beneath the 1–5 boxes */
     .mini-labels{
       margin-top: 10px;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 4px;
+      grid-template-columns: repeat(5, var(--opt-size));
+      gap: var(--opt-gap);
+      align-items: start;
+      justify-content: start;
       color: var(--muted);
       font-size: 12px;
     }
 
-    .mini-labels span strong{
+    .mini-labels .slot{
+      min-height: 2.2em; /* keeps row height stable even when some slots empty */
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .mini-labels .slot strong{
       color: var(--text);
-      font-weight: 750;
+      font-weight: 800;
+    }
+
+    .mini-labels .slot.empty{
+      visibility: hidden; /* keep spacing without visual noise */
     }
 
     /* Actions + results */
@@ -275,11 +305,9 @@
 
     .kv b{ font-weight: 800; }
 
-    /* Mobile: make boxes vertical */
+    /* Mobile: make boxes vertical; labels should follow the selected design intent */
     @media (max-width: 640px){
-      .scale-row{
-        grid-template-columns: 1fr;
-      }
+      .scale-row{ grid-template-columns: 1fr; }
       .scale-item{
         grid-template-columns: auto 1fr;
         grid-template-rows: auto;
@@ -293,11 +321,19 @@
         flex-direction: column;
         align-items: stretch;
       }
+
+      /* On mobile, show the per-option help text inside the box for 1/3/5.
+         Hide the underneath row because the boxes aren't in a row anymore. */
+      .mini-labels{ display: none; }
+
       .opt label{
         width: 100%;
-        height: 54px;
-        justify-items: center;
+        height: auto;
+        padding: 12px 0 10px;
+        grid-template-rows: auto auto;
       }
+      .opt .help{ display: block; }
+      .opt .help:empty{ display: none; }
     }
   </style>
 </head>
@@ -351,7 +387,6 @@
       <div id="results" class="results" aria-live="polite">
         <h2>Your results</h2>
         <p class="kv">
-          <span><b>Total:</b> <span id="rawScore">—</span></span>
           <span><b>Percentage:</b> <span id="pctScore">—</span></span>
         </p>
       </div>
@@ -359,7 +394,6 @@
   </div>
 
   <script>
-    // Questions (loaded from the first text row of the provided CSV)
     const QUESTIONS = [
       "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task",
       "I can give the impression that I’m more competent than I really am",
@@ -399,7 +433,6 @@
     const errorSummaryEl = document.getElementById("errorSummary");
     const errorBodyEl = document.getElementById("errorBody");
     const resultsEl = document.getElementById("results");
-    const rawScoreEl = document.getElementById("rawScore");
     const pctScoreEl = document.getElementById("pctScore");
     const calcBtn = document.getElementById("calcBtn");
     const resetBtn = document.getElementById("resetBtn");
@@ -418,8 +451,7 @@
 
         const fieldset = document.createElement("fieldset");
         fieldset.setAttribute("data-qnum", String(qNum));
-        fieldset.setAttribute("aria-describedby", `mini_${fieldsetId}`);
-        // Make focusable for scroll/focus on error:
+        // Focusable so we can move focus on validation errors
         fieldset.tabIndex = -1;
 
         const legend = document.createElement("legend");
@@ -441,14 +473,24 @@
 
           const label = document.createElement("label");
           label.setAttribute("for", input.id);
-          label.textContent = String(s.value);
           label.title = s.label;
 
-          // When user answers, remove missing highlight and refresh error summary if showing
+          const num = document.createElement("span");
+          num.className = "num";
+          num.textContent = String(s.value);
+
+          const help = document.createElement("span");
+          help.className = "help";
+          // On mobile we show these; on desktop they’re hidden (and we use the underneath row)
+          help.textContent = s.showInlineLabel ? s.label : "";
+
+          label.appendChild(num);
+          label.appendChild(help);
+
           input.addEventListener("change", () => {
             qWrap.classList.remove("missing");
             if (errorSummaryEl.classList.contains("show")) {
-              updateMissingUI(); // keeps the summary accurate in real time
+              updateMissingUI();
             }
           });
 
@@ -459,17 +501,27 @@
 
         fieldset.appendChild(options);
 
-        // Inline labels for 1, 3, 5 only
+        // Under-box labels aligned beneath boxes 1–5 (only show text under 1,3,5)
         const mini = document.createElement("div");
         mini.className = "mini-labels";
         mini.id = `mini_${fieldsetId}`;
 
-        const lines = SCALE.filter(s => s.showInlineLabel).map(s => {
-          const span = document.createElement("span");
-          span.innerHTML = `<strong>${s.value}</strong> ${s.label}`;
-          return span;
-        });
-        lines.forEach(n => mini.appendChild(n));
+        // Create 5 slots so alignment is guaranteed
+        for (let i = 1; i <= 5; i++) {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+
+          const scaleDef = SCALE.find(s => s.value === i);
+          if (scaleDef && scaleDef.showInlineLabel) {
+            slot.innerHTML = `<strong>${i}</strong> ${scaleDef.label}`;
+          } else {
+            slot.classList.add("empty");
+            slot.textContent = "."; // hidden via visibility, keeps consistent height
+            slot.setAttribute("aria-hidden", "true");
+          }
+
+          mini.appendChild(slot);
+        }
 
         fieldset.appendChild(mini);
 
@@ -504,7 +556,6 @@
     function updateMissingUI() {
       const missing = findMissingQuestions();
 
-      // Clear all missing highlights first
       document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
 
       if (missing.length === 0) {
@@ -513,13 +564,11 @@
         return { missing, firstMissingBlock: null };
       }
 
-      // Highlight missing blocks
       missing.forEach((qNum) => {
         const block = document.getElementById(`block_q${qNum}`);
         if (block) block.classList.add("missing");
       });
 
-      // Update error summary text
       const list = missing.map(n => `Q${n}`).join(", ");
       errorBodyEl.textContent = `You missed ${missing.length} question(s): ${list}.`;
       errorSummaryEl.classList.add("show");
@@ -535,15 +584,13 @@
       if (fieldset) fieldset.focus({ preventScroll: true });
     }
 
-    function showResults(total, pct) {
-      rawScoreEl.textContent = `${total} / ${MAX_TOTAL}`;
+    function showResults(pct) {
       pctScoreEl.textContent = `${pct}%`;
       resultsEl.classList.add("show");
     }
 
     function clearResults() {
       resultsEl.classList.remove("show");
-      rawScoreEl.textContent = "—";
       pctScoreEl.textContent = "—";
     }
 
@@ -553,33 +600,28 @@
       errorSummaryEl.classList.remove("show");
       errorBodyEl.textContent = "";
       document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
-      // Move viewport back to top scale key for a clean restart
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     calcBtn.addEventListener("click", () => {
       clearResults();
       const { missing, firstMissingBlock } = updateMissingUI();
+
       if (missing.length > 0) {
-        // Make sure the user sees the error summary even if they're at the bottom
         errorSummaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Then take them to the first missing question
         setTimeout(() => scrollToFirstMissing(firstMissingBlock), 250);
         return;
       }
 
-      const { total, pct } = computeScore();
-      showResults(total, pct);
-      // If they scored successfully, ensure error is hidden
+      const { pct } = computeScore();
+      showResults(pct);
       errorSummaryEl.classList.remove("show");
       errorBodyEl.textContent = "";
-      // Bring results into view
       resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     resetBtn.addEventListener("click", resetAll);
 
-    // Initial render
     renderQuestions();
   </script>
 </body>
