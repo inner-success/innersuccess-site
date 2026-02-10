@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inner Success Quiz</title>
+  <style>
+    :root{
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --border-strong: #9ca3af;
+      --focus: #111827;
+      --error: #b91c1c;
+      --error-bg: #fef2f2;
+      --card: #f9fafb;
+      --shadow: 0 1px 2px rgba(0,0,0,.06);
+      --radius: 12px;
+      --gap: 32px; /* whitespace gap between question blocks */
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.4;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 16px 44px;
+    }
+
+    header{
+      margin-bottom: 18px;
+    }
+
+    h1{
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+    }
+
+    .sub{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow);
+      margin: 14px 0 22px;
+    }
+
+    .scale-key-title{
+      margin: 0 0 10px;
+      font-weight: 650;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .scale-row{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .scale-item{
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 8px;
+      justify-items: start;
+    }
+
+    .box{
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      background: #fff;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .scale-label{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Error summary */
+    .error-summary{
+      display: none;
+      border: 1px solid var(--error);
+      background: var(--error-bg);
+      border-radius: var(--radius);
+      padding: 12px 12px;
+      margin: 0 0 18px;
+    }
+    .error-summary.show{ display: block; }
+    .error-title{
+      margin: 0 0 6px;
+      font-weight: 750;
+      color: var(--error);
+      font-size: 14px;
+    }
+    .error-body{
+      margin: 0;
+      color: #7f1d1d;
+      font-size: 14px;
+    }
+
+    /* Questions */
+    form{ margin: 0; }
+
+    .q{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      margin-bottom: var(--gap); /* mandatory whitespace gap */
+      scroll-margin-top: 16px;
+    }
+
+    .q.missing{
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    fieldset{
+      border: 0;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+
+    legend{
+      font-weight: 700;
+      font-size: 15px;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+    .options{
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+
+    /* Hide native radios but keep accessible */
+    .opt input[type="radio"]{
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .opt{
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .opt label{
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: #fff;
+      font-weight: 750;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .05s ease, border-color .15s ease, background-color .15s ease;
+    }
+
+    .opt label:active{
+      transform: scale(0.99);
+    }
+
+    .opt input[type="radio"]:focus-visible + label{
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .opt input[type="radio"]:checked + label{
+      border-color: var(--text);
+      background: #f3f4f6;
+    }
+
+    .mini-labels{
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-labels span strong{
+      color: var(--text);
+      font-weight: 750;
+    }
+
+    /* Actions + results */
+    .actions{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    button{
+      appearance: none;
+      border: 1px solid var(--text);
+      background: var(--text);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+
+    button.secondary{
+      background: #fff;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    button:focus-visible{
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .results{
+      display: none;
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow);
+    }
+    .results.show{ display: block; }
+
+    .results h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .kv{
+      margin: 0;
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .kv b{ font-weight: 800; }
+
+    /* Mobile: make boxes vertical */
+    @media (max-width: 640px){
+      .scale-row{
+        grid-template-columns: 1fr;
+      }
+      .scale-item{
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto;
+        align-items: center;
+        justify-items: start;
+        gap: 10px;
+      }
+      .scale-label{ font-size: 13px; }
+
+      .options{
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .opt label{
+        width: 100%;
+        height: 54px;
+        justify-items: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Inner Success Quiz</h1>
+      <p class="sub">Answer every question. Your result is shown as a percentage from 0% to 100%.</p>
+    </header>
+
+    <div class="panel" aria-label="Scale key">
+      <p class="scale-key-title">Scale key</p>
+      <div class="scale-row" role="list">
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">1</div>
+          <div class="scale-label">Not at all true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">2</div>
+          <div class="scale-label">Rarely true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">3</div>
+          <div class="scale-label">Sometimes true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">4</div>
+          <div class="scale-label">Often true</div>
+        </div>
+        <div class="scale-item" role="listitem">
+          <div class="box" aria-hidden="true">5</div>
+          <div class="scale-label">Very true</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorSummary" class="error-summary" role="alert" aria-live="assertive">
+      <p class="error-title">You missed question(s).</p>
+      <p id="errorBody" class="error-body"></p>
+    </div>
+
+    <form id="quizForm" novalidate>
+      <div id="questions"></div>
+
+      <div class="actions">
+        <button type="button" id="calcBtn">Calculate score</button>
+        <button type="button" id="resetBtn" class="secondary">Reset</button>
+      </div>
+
+      <div id="results" class="results" aria-live="polite">
+        <h2>Your results</h2>
+        <p class="kv">
+          <span><b>Total:</b> <span id="rawScore">—</span></span>
+          <span><b>Percentage:</b> <span id="pctScore">—</span></span>
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Questions (loaded from the first text row of the provided CSV)
+    const QUESTIONS = [
+      "I have often succeeded on a test or task even though I was afraid I would not do well before I undertook the task",
+      "I can give the impression that I’m more competent than I really am",
+      "I avoid evaluations if possible, and dread others evaluating me",
+      "When people praise me for something I’ve accomplished, I’m afraid I won’t be able to live up to their expectations of me in the future",
+      "I sometimes think I obtained my present position or gained my present success because I happened to be in the right place at the right time or knew the right people",
+      "I’m afraid people important to me may find out that I’m not as capable as they think I am",
+      "I tend to remember the incidents in which I have not done my best more than those times I have done my best",
+      "I rarely do a project or task as well as I’d like to do it",
+      "Sometimes I feel or believe that my success in my life or in my job has been the result of some kind of error",
+      "It’s hard for me to accept compliments or praise about my intelligence or accomplishments",
+      "At times, I feel my success has been due to some kind of luck",
+      "I’m disappointed at times in my present accomplishments and think I should have accomplished much more",
+      "Sometimes I’m afraid others will discover how much knowledge or ability I really lack",
+      "I’m often afraid that I may fail at a new assignment or undertaking in my job or studies even though I generally do well at what I attempt",
+      "When I’ve succeeded at something and received recognition for my accomplishments, I have doubts that I can keep repeating that success",
+      "If I receive a great deal of praise and recognition for something I’ve done, I tend to discount the importance of what I’ve done",
+      "I often compare my ability to those around me and think they may be more intelligent than I am",
+      "I often worry about not succeeding with a project or evaluation, even though others around me have considerable confidence that I will do well",
+      "If I’m going to receive a promotion or gain recognition of some kind, I hesitate to tell others until it is an accomplished fact",
+      "I feel bad or discouraged if I’m not ‘the best’ or at least ‘very special’ in situations that involve achievement"
+    ];
+
+    const SCALE = [
+      { value: 1, label: "Not at all true", showInlineLabel: true },
+      { value: 2, label: "Rarely true", showInlineLabel: false },
+      { value: 3, label: "Sometimes true", showInlineLabel: true },
+      { value: 4, label: "Often true", showInlineLabel: false },
+      { value: 5, label: "Very true", showInlineLabel: true },
+    ];
+
+    const MIN_TOTAL = 20;
+    const MAX_TOTAL = 100;
+
+    const questionsEl = document.getElementById("questions");
+    const formEl = document.getElementById("quizForm");
+    const errorSummaryEl = document.getElementById("errorSummary");
+    const errorBodyEl = document.getElementById("errorBody");
+    const resultsEl = document.getElementById("results");
+    const rawScoreEl = document.getElementById("rawScore");
+    const pctScoreEl = document.getElementById("pctScore");
+    const calcBtn = document.getElementById("calcBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function renderQuestions() {
+      questionsEl.innerHTML = "";
+
+      QUESTIONS.forEach((text, idx) => {
+        const qNum = idx + 1;
+        const fieldsetId = `q${qNum}`;
+        const groupName = `q_${qNum}`;
+
+        const qWrap = document.createElement("div");
+        qWrap.className = "q";
+        qWrap.id = `block_${fieldsetId}`;
+
+        const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute("data-qnum", String(qNum));
+        fieldset.setAttribute("aria-describedby", `mini_${fieldsetId}`);
+        // Make focusable for scroll/focus on error:
+        fieldset.tabIndex = -1;
+
+        const legend = document.createElement("legend");
+        legend.textContent = `Q${qNum}. ${text}`;
+        fieldset.appendChild(legend);
+
+        const options = document.createElement("div");
+        options.className = "options";
+
+        SCALE.forEach((s) => {
+          const opt = document.createElement("div");
+          opt.className = "opt";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = groupName;
+          input.value = String(s.value);
+          input.id = `${fieldsetId}_${s.value}`;
+
+          const label = document.createElement("label");
+          label.setAttribute("for", input.id);
+          label.textContent = String(s.value);
+          label.title = s.label;
+
+          // When user answers, remove missing highlight and refresh error summary if showing
+          input.addEventListener("change", () => {
+            qWrap.classList.remove("missing");
+            if (errorSummaryEl.classList.contains("show")) {
+              updateMissingUI(); // keeps the summary accurate in real time
+            }
+          });
+
+          opt.appendChild(input);
+          opt.appendChild(label);
+          options.appendChild(opt);
+        });
+
+        fieldset.appendChild(options);
+
+        // Inline labels for 1, 3, 5 only
+        const mini = document.createElement("div");
+        mini.className = "mini-labels";
+        mini.id = `mini_${fieldsetId}`;
+
+        const lines = SCALE.filter(s => s.showInlineLabel).map(s => {
+          const span = document.createElement("span");
+          span.innerHTML = `<strong>${s.value}</strong> ${s.label}`;
+          return span;
+        });
+        lines.forEach(n => mini.appendChild(n));
+
+        fieldset.appendChild(mini);
+
+        qWrap.appendChild(fieldset);
+        questionsEl.appendChild(qWrap);
+      });
+    }
+
+    function getAnswerValue(qNum) {
+      const checked = formEl.querySelector(`input[name="q_${qNum}"]:checked`);
+      return checked ? Number(checked.value) : null;
+    }
+
+    function computeScore() {
+      let total = 0;
+      for (let i = 1; i <= QUESTIONS.length; i++) {
+        const v = getAnswerValue(i);
+        total += v;
+      }
+      const pct = Math.round(((total - MIN_TOTAL) / (MAX_TOTAL - MIN_TOTAL)) * 100);
+      return { total, pct };
+    }
+
+    function findMissingQuestions() {
+      const missing = [];
+      for (let i = 1; i <= QUESTIONS.length; i++) {
+        if (getAnswerValue(i) === null) missing.push(i);
+      }
+      return missing;
+    }
+
+    function updateMissingUI() {
+      const missing = findMissingQuestions();
+
+      // Clear all missing highlights first
+      document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
+
+      if (missing.length === 0) {
+        errorSummaryEl.classList.remove("show");
+        errorBodyEl.textContent = "";
+        return { missing, firstMissingBlock: null };
+      }
+
+      // Highlight missing blocks
+      missing.forEach((qNum) => {
+        const block = document.getElementById(`block_q${qNum}`);
+        if (block) block.classList.add("missing");
+      });
+
+      // Update error summary text
+      const list = missing.map(n => `Q${n}`).join(", ");
+      errorBodyEl.textContent = `You missed ${missing.length} question(s): ${list}.`;
+      errorSummaryEl.classList.add("show");
+
+      const firstMissingBlock = document.getElementById(`block_q${missing[0]}`);
+      return { missing, firstMissingBlock };
+    }
+
+    function scrollToFirstMissing(firstMissingBlock) {
+      if (!firstMissingBlock) return;
+      firstMissingBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+      const fieldset = firstMissingBlock.querySelector("fieldset");
+      if (fieldset) fieldset.focus({ preventScroll: true });
+    }
+
+    function showResults(total, pct) {
+      rawScoreEl.textContent = `${total} / ${MAX_TOTAL}`;
+      pctScoreEl.textContent = `${pct}%`;
+      resultsEl.classList.add("show");
+    }
+
+    function clearResults() {
+      resultsEl.classList.remove("show");
+      rawScoreEl.textContent = "—";
+      pctScoreEl.textContent = "—";
+    }
+
+    function resetAll() {
+      formEl.reset();
+      clearResults();
+      errorSummaryEl.classList.remove("show");
+      errorBodyEl.textContent = "";
+      document.querySelectorAll(".q.missing").forEach(el => el.classList.remove("missing"));
+      // Move viewport back to top scale key for a clean restart
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    calcBtn.addEventListener("click", () => {
+      clearResults();
+      const { missing, firstMissingBlock } = updateMissingUI();
+      if (missing.length > 0) {
+        // Make sure the user sees the error summary even if they're at the bottom
+        errorSummaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Then take them to the first missing question
+        setTimeout(() => scrollToFirstMissing(firstMissingBlock), 250);
+        return;
+      }
+
+      const { total, pct } = computeScore();
+      showResults(total, pct);
+      // If they scored successfully, ensure error is hidden
+      errorSummaryEl.classList.remove("show");
+      errorBodyEl.textContent = "";
+      // Bring results into view
+      resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    resetBtn.addEventListener("click", resetAll);
+
+    // Initial render
+    renderQuestions();
+  </script>
+</body>
+</html>
