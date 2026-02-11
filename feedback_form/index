@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inner Success Feedback</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.35;
+      color: #111;
+    }
+    body {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 0 16px;
+      background: #fff;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0 0 6px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .sub {
+      margin: 0 0 22px;
+      color: #333;
+      font-size: 14px;
+      max-width: 70ch;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+    }
+    .field { margin: 18px 0; }
+    label {
+      display: block;
+      font-weight: 650;
+      margin: 0 0 8px;
+    }
+    input[type="text"]{
+      width: 100%;
+      max-width: 560px;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+    }
+    textarea{
+      width: 100%;
+      min-height: 170px;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      resize: vertical;
+    }
+    .compact textarea { min-height: 120px; }
+    .hint {
+      font-size: 13px;
+      color: #444;
+      margin-top: 8px;
+      max-width: 75ch;
+    }
+    .error {
+      display: none;
+      margin-top: 8px;
+      color: #b00020;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .radio-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .radio {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      user-select: none;
+    }
+    .radio input { margin: 0; }
+    .divider {
+      height: 1px;
+      background: #e6e6e6;
+      margin: 18px 0;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      align-items: center;
+    }
+    button {
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: 1px solid #111;
+      background: #fff;
+      cursor: pointer;
+    }
+    button.primary {
+      background: #111;
+      color: #fff;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .status {
+      font-size: 13px;
+      color: #333;
+    }
+    .privacy {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #555;
+      max-width: 85ch;
+    }
+    .hidden { display: none; }
+
+    /* Confirmation view */
+    .confirm h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .confirm p {
+      margin: 0 0 12px;
+      color: #333;
+      font-size: 14px;
+      max-width: 75ch;
+    }
+  </style>
+</head>
+<body>
+  <h1>Inner Success Feedback</h1>
+  <p class="sub">Long answers are welcome. Your responses are submitted securely and stored via Google Sheets/Drive through an Apps Script endpoint. Marketing permission is respected.</p>
+
+  <div class="card" id="formView">
+    <form id="feedbackForm" novalidate>
+      <div class="field">
+        <label for="name">Please enter your first name or initials</label>
+        <input id="name" name="name" type="text" autocomplete="name" />
+        <div class="error" id="err-name">Please enter your first name or initials.</div>
+      </div>
+
+      <div class="field">
+        <label for="coach">Coach’s name</label>
+        <input id="coach" name="coach" type="text" />
+        <div class="error" id="err-coach">Please enter your coach’s name.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label for="decide">What made you decide to start Inner Success?</label>
+        <textarea id="decide" name="decide" placeholder="Write as much as you need..."></textarea>
+        <div class="error" id="err-decide">Please answer this question.</div>
+      </div>
+
+      <div class="field">
+        <label for="before">Before working with your coach, what was the problem you were looking to solve, and how was having that problem making you feel?</label>
+        <textarea id="before" name="before" placeholder="Write as much as you need..."></textarea>
+        <div class="error" id="err-before">Please answer this question.</div>
+      </div>
+
+      <div class="field">
+        <label for="process">Whilst working with your coach, how did you find the process? What did you find most helpful?</label>
+        <textarea id="process" name="process" placeholder="Write as much as you need..."></textarea>
+        <div class="error" id="err-process">Please answer this question.</div>
+      </div>
+
+      <div class="field">
+        <label for="after">After working with your coach, what changes have you felt in yourself and your work.</label>
+        <textarea id="after" name="after" placeholder="Write as much as you need..."></textarea>
+        <div class="error" id="err-after">Please answer this question.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>How would your rate Inner Success</label>
+        <div class="radio-row" role="radiogroup" aria-label="Inner Success rating out of 5">
+          <label class="radio"><input type="radio" name="rating" value="1" /> 1</label>
+          <label class="radio"><input type="radio" name="rating" value="2" /> 2</label>
+          <label class="radio"><input type="radio" name="rating" value="3" /> 3</label>
+          <label class="radio"><input type="radio" name="rating" value="4" /> 4</label>
+          <label class="radio"><input type="radio" name="rating" value="5" /> 5</label>
+        </div>
+        <div class="error" id="err-rating">Please choose a score from 1 to 5.</div>
+      </div>
+
+      <div class="field compact hidden" id="fiveStarField">
+        <label for="makeFive">What would have made it 5 stars for you?</label>
+        <textarea id="makeFive" name="makeFive" placeholder="Only shown if you didn’t choose 5..."></textarea>
+        <div class="error" id="err-makeFive">Please answer this question (or change your rating to 5).</div>
+      </div>
+
+      <div class="field">
+        <label>How likely would you be to recommend Inner Success to someone else? (5 being 'Absolutely!')</label>
+        <div class="radio-row" role="radiogroup" aria-label="Likelihood to recommend out of 5">
+          <label class="radio"><input type="radio" name="recommend" value="1" /> 1</label>
+          <label class="radio"><input type="radio" name="recommend" value="2" /> 2</label>
+          <label class="radio"><input type="radio" name="recommend" value="3" /> 3</label>
+          <label class="radio"><input type="radio" name="recommend" value="4" /> 4</label>
+          <label class="radio"><input type="radio" name="recommend" value="5" /> 5</label>
+        </div>
+        <div class="error" id="err-recommend">Please choose a score from 1 to 5.</div>
+      </div>
+
+      <div class="field">
+        <label for="fence">What would you say to someone sitting on the fence about starting Inner Success?</label>
+        <textarea id="fence" name="fence" placeholder="Write as much as you need..."></textarea>
+        <div class="error" id="err-fence">Please answer this question.</div>
+      </div>
+
+      <div class="field">
+        <label for="anything">Anything else you'd like to add?</label>
+        <textarea id="anything" name="anything" placeholder="Optional..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Are you happy for me to use your feedback anonymously in my marketing?</label>
+        <div class="radio-row" role="radiogroup" aria-label="Marketing consent">
+          <label class="radio"><input type="radio" name="marketing" value="Yes" /> Yes</label>
+          <label class="radio"><input type="radio" name="marketing" value="No" /> No</label>
+        </div>
+        <div class="error" id="err-marketing">Please select Yes or No.</div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="submitBtn" type="submit">Submit</button>
+        <button type="button" id="clearBtn">Clear</button>
+        <span class="status" id="statusText" aria-live="polite"></span>
+      </div>
+
+      <div class="privacy">
+        This form does not collect IP address, user agent, or tracking data. Your responses are stored via Google Sheets/Drive through the configured Apps Script endpoint.
+      </div>
+    </form>
+  </div>
+
+  <div class="card confirm hidden" id="confirmView">
+    <h2>Thank you. Your feedback has been submitted.</h2>
+    <p>You can close this page now, or submit another response.</p>
+    <div class="actions">
+      <button class="primary" id="anotherBtn" type="button">Submit another response</button>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * CONFIG
+     * Replace this with your deployed Google Apps Script Web App URL.
+     * Example:
+     * const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+     */
+    const GAS_ENDPOINT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+    // Track when the user first starts (per your removed system fields, only Submit Date is exported)
+    // Keeping this only for potential debugging; not included in payload.
+    const pageLoadedAt = new Date();
+
+    const formView = document.getElementById("formView");
+    const confirmView = document.getElementById("confirmView");
+    const form = document.getElementById("feedbackForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusText = document.getElementById("statusText");
+
+    const fiveStarField = document.getElementById("fiveStarField");
+    const makeFiveEl = document.getElementById("makeFive");
+
+    function $(id){ return document.getElementById(id); }
+    function showError(id){ $(id).style.display = "block"; }
+    function hideError(id){ $(id).style.display = "none"; }
+
+    function autosize(el){
+      el.style.height = "auto";
+      el.style.height = (el.scrollHeight + 2) + "px";
+    }
+    document.querySelectorAll("textarea").forEach(t => {
+      t.addEventListener("input", () => autosize(t));
+      autosize(t);
+    });
+
+    function getRadioValue(name){
+      const el = form.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : "";
+    }
+
+    function toggleFiveStar(){
+      const rating = getRadioValue("rating");
+      if (rating && rating !== "5") {
+        fiveStarField.classList.remove("hidden");
+      } else {
+        fiveStarField.classList.add("hidden");
+        makeFiveEl.value = "";
+        autosize(makeFiveEl);
+        hideError("err-makeFive");
+      }
+    }
+    form.querySelectorAll('input[name="rating"]').forEach(r => r.addEventListener("change", toggleFiveStar));
+    toggleFiveStar();
+
+    function isoUtcNow(){
+      return new Date().toISOString();
+    }
+
+    function buildPayload(){
+      const name = $("name").value.trim();
+      const coach = $("coach").value.trim();
+
+      const decide = $("decide").value.trim();
+      const before = $("before").value.trim();
+      const process = $("process").value.trim();
+      const after = $("after").value.trim();
+
+      const rating = getRadioValue("rating");
+      const makeFive = makeFiveEl.value.trim();
+
+      const recommend = getRadioValue("recommend");
+      const fence = $("fence").value.trim();
+      const anything = $("anything").value.trim();
+
+      const marketing = getRadioValue("marketing");
+      const submitDateUtc = isoUtcNow();
+
+      // Legacy row must match exact keys and order
+      const legacyRow = {
+        "#": "",
+        "Please enter your first name or initials": name,
+        "What made you decide to start Inner Success?": decide,
+        "Before working with your coach, what was the problem you were looking to solve, and how was having that problem making you feel?": before,
+        "Whilst working with your coach, how did you find the process? What did you find most helpful?": process,
+        "After working with your coach, what changes have you felt in yourself and your work.": after,
+        "How would your rate Inner Success": rating,
+        "What would have made it 5 stars for you?": (rating && rating !== "5") ? makeFive : "",
+        "How likely would you be to recommend Inner Success to someone else? (5 being 'Absolutely!')": recommend,
+        "What would you say to someone sitting on the fence about starting Inner Success?": fence,
+        "Anything else you'd like to add?": anything,
+        "Are you happy for me to use your feedback anonymously in my marketing?": marketing,
+        "Response Type": "GitHub Form",
+        "Submit Date (UTC)": submitDateUtc
+      };
+
+      // Coach name included in payload, not in legacyRow unless you later choose to add it
+      return {
+        coachName: coach,
+        legacyRow
+      };
+    }
+
+    function validate(payload){
+      let ok = true;
+
+      const legacy = payload.legacyRow;
+
+      if (!legacy["Please enter your first name or initials"]) { showError("err-name"); ok = false; }
+      else hideError("err-name");
+
+      if (!payload.coachName) { showError("err-coach"); ok = false; }
+      else hideError("err-coach");
+
+      if (!legacy["What made you decide to start Inner Success?"]) { showError("err-decide"); ok = false; }
+      else hideError("err-decide");
+
+      if (!legacy["Before working with your coach, what was the problem you were looking to solve, and how was having that problem making you feel?"]) { showError("err-before"); ok = false; }
+      else hideError("err-before");
+
+      if (!legacy["Whilst working with your coach, how did you find the process? What did you find most helpful?"]) { showError("err-process"); ok = false; }
+      else hideError("err-process");
+
+      if (!legacy["After working with your coach, what changes have you felt in yourself and your work."]) { showError("err-after"); ok = false; }
+      else hideError("err-after");
+
+      const rating = legacy["How would your rate Inner Success"];
+      if (!rating) { showError("err-rating"); ok = false; }
+      else hideError("err-rating");
+
+      if (rating && rating !== "5") {
+        if (!legacy["What would have made it 5 stars for you?"]) { showError("err-makeFive"); ok = false; }
+        else hideError("err-makeFive");
+      }
+
+      const recommend = legacy["How likely would you be to recommend Inner Success to someone else? (5 being 'Absolutely!')"];
+      if (!recommend) { showError("err-recommend"); ok = false; }
+      else hideError("err-recommend");
+
+      if (!legacy["What would you say to someone sitting on the fence about starting Inner Success?"]) { showError("err-fence"); ok = false; }
+      else hideError("err-fence");
+
+      const marketing = legacy["Are you happy for me to use your feedback anonymously in my marketing?"];
+      if (!marketing) { showError("err-marketing"); ok = false; }
+      else hideError("err-marketing");
+
+      return ok;
+    }
+
+    function setSubmitting(isSubmitting){
+      submitBtn.disabled = isSubmitting;
+      clearBtn.disabled = isSubmitting;
+      statusText.textContent = isSubmitting ? "Submitting…" : "";
+    }
+
+    function showSuccess(){
+      formView.classList.add("hidden");
+      confirmView.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showFailure(message){
+      statusText.textContent = message;
+    }
+
+    function resetForm(){
+      form.reset();
+      makeFiveEl.value = "";
+      toggleFiveStar();
+      document.querySelectorAll(".error").forEach(e => e.style.display = "none");
+      statusText.textContent = "";
+      document.querySelectorAll("textarea").forEach(t => autosize(t));
+    }
+
+    clearBtn.addEventListener("click", resetForm);
+
+    document.getElementById("anotherBtn").addEventListener("click", () => {
+      confirmView.classList.add("hidden");
+      formView.classList.remove("hidden");
+      resetForm();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!GAS_ENDPOINT_URL || GAS_ENDPOINT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+        showFailure("Configuration error: GAS_ENDPOINT_URL is not set.");
+        return;
+      }
+
+      toggleFiveStar();
+      const payload = buildPayload();
+
+      if (!validate(payload)) return;
+
+      setSubmitting(true);
+      showFailure("");
+
+      try {
+        const res = await fetch(GAS_ENDPOINT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // Apps Script sometimes returns 200 with text; treat non-2xx as failure
+        const text = await res.text();
+
+        if (!res.ok) {
+          throw new Error(`Server returned ${res.status}. ${text || ""}`.trim());
+        }
+
+        // Optional: if backend returns JSON, attempt to parse, but not required.
+        // We don't require IDs/dates from backend, so success is enough.
+        showSuccess();
+        resetForm();
+      } catch (err) {
+        showFailure("Submission failed. Please try again. If it keeps failing, contact Tara and share that you saw an error submitting the form.");
+        console.error(err);
+      } finally {
+        setSubmitting(false);
+      }
+    });
+  </script>
+</body>
+</html>
