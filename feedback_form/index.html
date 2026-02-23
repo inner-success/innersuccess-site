@@ -148,14 +148,14 @@
     <form id="feedbackForm" novalidate>
       <div class="field">
         <label for="name">Please enter your first name or initials</label>
-        <input id="name" name="name" type="text" autocomplete="name" />
+        <input id="name" name="name" type="text" autocomplete="name" required />
         <div class="error" id="err-name">Please enter your first name or initials.</div>
       </div>
 
       <div class="field">
-        <label for="coach">Coach’s name</label>
+        <label for="coach">Coach's name</label>
         <input id="coach" name="coach" type="text" />
-        <div class="error" id="err-coach">Please enter your coach’s name.</div>
+        <div class="error" id="err-coach">Please enter your coach's name.</div>
       </div>
 
       <div class="divider"></div>
@@ -187,7 +187,7 @@
       <div class="divider"></div>
 
       <div class="field">
-        <label>How would your rate Inner Success</label>
+        <label>How would you rate Inner Success?</label>
         <div class="radio-row" role="radiogroup" aria-label="Inner Success rating out of 5">
           <label class="radio"><input type="radio" name="rating" value="1" /> 1</label>
           <label class="radio"><input type="radio" name="rating" value="2" /> 2</label>
@@ -200,7 +200,7 @@
 
       <div class="field compact hidden" id="fiveStarField">
         <label for="makeFive">What would have made it 5 stars for you?</label>
-        <textarea id="makeFive" name="makeFive" placeholder="Only shown if you didn’t choose 5..."></textarea>
+        <textarea id="makeFive" name="makeFive" placeholder="Only shown if you didn't choose 5..."></textarea>
         <div class="error" id="err-makeFive">Please answer this question (or change your rating to 5).</div>
       </div>
 
@@ -338,11 +338,12 @@
       const legacyRow = {
         "#": "",
         "Please enter your first name or initials": name,
+        "Coach's name": coach,
         "What made you decide to start Inner Success?": decide,
         "Before working with your coach, what was the problem you were looking to solve, and how was having that problem making you feel?": before,
         "Whilst working with your coach, how did you find the process? What did you find most helpful?": process,
         "After working with your coach, what changes have you felt in yourself and your work.": after,
-        "How would your rate Inner Success": rating,
+        "How would you rate Inner Success?": rating,
         "What would have made it 5 stars for you?": (rating && rating !== "5") ? makeFive : "",
         "How likely would you be to recommend Inner Success to someone else? (5 being 'Absolutely!')": recommend,
         "What would you say to someone sitting on the fence about starting Inner Success?": fence,
@@ -382,7 +383,7 @@
       if (!legacy["After working with your coach, what changes have you felt in yourself and your work."]) { showError("err-after"); ok = false; }
       else hideError("err-after");
 
-      const rating = legacy["How would your rate Inner Success"];
+      const rating = legacy["How would you rate Inner Success?"];
       if (!rating) { showError("err-rating"); ok = false; }
       else hideError("err-rating");
 
@@ -408,7 +409,7 @@
     function setSubmitting(isSubmitting){
       submitBtn.disabled = isSubmitting;
       clearBtn.disabled = isSubmitting;
-      statusText.textContent = isSubmitting ? "Submitting…" : "";
+      statusText.textContent = isSubmitting ? "Submitting..." : "";
     }
 
     function showSuccess(){
@@ -481,3 +482,4 @@
   </script>
 </body>
 </html>
+
