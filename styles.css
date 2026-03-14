@@ -1,5 +1,5 @@
 /* ===========================
-   Inner Success — Stylesheet
+   Inner Success, Stylesheet
    =========================== */
 
 :root {
@@ -321,6 +321,18 @@ a { color: var(--color-accent); text-decoration: none; }
 
 .metaphor-content strong {
     color: var(--color-dark);
+}
+
+.proof-signal {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.proof-signal a {
+    font-weight: 500;
 }
 
 /* ===========================
