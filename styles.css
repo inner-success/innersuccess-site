@@ -264,6 +264,15 @@ a { color: var(--color-accent); text-decoration: none; }
     font-size: 1.05rem;
 }
 
+/* Constrain standalone body paragraphs so they sit visually centred
+   beneath the centred section titles, while staying left-aligned. */
+.section > .container > p,
+.section > .container > .lead-text {
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .lead-text {
     font-size: 1.15rem;
     font-weight: 500;
