@@ -454,6 +454,30 @@ a { color: var(--color-accent); text-decoration: none; }
     transform: rotate(45deg);
 }
 
+.cross-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.cross-list li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--color-text-light);
+}
+
+.cross-list li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #B05050;
+}
+
 /* ===========================
    CTA Block
    =========================== */
